@@ -1,11 +1,37 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_catalog/models/catalog.dart';
 import 'package:flutter_catalog/widgets/drawer.dart';
 import 'package:flutter_catalog/widgets/item_widget.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   int days = 30;
+
   String name = "Priyanka";
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  loadData() async {
+    var catalogJson = await rootBundle.loadString('files/catalog.json');
+    // print(catalogJson);
+
+    var decodeData = jsonDecode(catalogJson); // you will get map
+    //print(decodeData);
+
+    var productData = decodeData["products"];
+    //print(productData);
+  }
 
 //Day 11 , we learnet about context
   @override
