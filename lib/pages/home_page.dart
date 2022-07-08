@@ -23,14 +23,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   loadData() async {
+    await Future.delayed(Duration(seconds: 4));
     var catalogJson = await rootBundle.loadString('files/catalog.json');
-    // print(catalogJson);
+    //print(catalogJson); //type is string
 
-    var decodeData = jsonDecode(catalogJson); // you will get map
-    //print(decodeData);
+    var decodeData = jsonDecode(catalogJson);
+    //print(decodeData); //_JsonMap {products:[{},{},{}]}
 
-    var productData = decodeData["products"];
-    //print(productData);
+    var productData = decodeData["products"]; //fetching prodcuts property
+    //print(productData); // give you List [{},{},{}]
+
+    //Now we need to convert above list to list of Items
+    //we have already defined a method fromMap in our Item class
+    CatalogModel.items =
+        List.from(productData).map<Item>((item) => Item.fromMap(item)).toList();
+    setState(() {});
   }
 
 //Day 11 , we learnet about context
@@ -41,11 +48,18 @@ class _HomePageState extends State<HomePage> {
         title: Text('Catalog'),
         centerTitle: true,
       ),
-      body: ListView.builder(
-        itemCount: CatalogModel.items.length,
-        itemBuilder: (context, index) {
-          return ItemWidget(item: CatalogModel.items[index]);
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: (CatalogModel.items != null && CatalogModel.items.isNotEmpty)
+            ? ListView.builder(
+                itemCount: CatalogModel.items.length,
+                itemBuilder: (context, index) {
+                  return ItemWidget(item: CatalogModel.items[index]);
+                },
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
       ),
       drawer: MyDrawer(),
     );
